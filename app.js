@@ -1,37 +1,67 @@
-// Copyright 2017 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+import * as React from 'react';
+import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { SplashScreen } from 'expo';
+import * as Font from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-'use strict';
+import BottomTabNavigator from './navigation/BottomTabNavigator';
+import useLinking from './navigation/useLinking';
 
-// [START gae_node_request_example]
-const express = require('express');
+const Stack = createStackNavigator();
 
-const app = express();
+export default function App(props) {
+  const [isLoadingComplete, setLoadingComplete] = React.useState(false);
+  const [initialNavigationState, setInitialNavigationState] = React.useState();
+  const containerRef = React.useRef();
+  const { getInitialState } = useLinking(containerRef);
 
-app.get('/', (req, res) => {
-  res
-    .status(200)
-    .send('Hello, world!')
-    .end();
+  // Load any resources or data that we need prior to rendering the app
+  React.useEffect(() => {
+    async function loadResourcesAndDataAsync() {
+      try {
+        SplashScreen.preventAutoHide();
+
+        // Load our initial navigation state
+        setInitialNavigationState(await getInitialState());
+
+        // Load fonts
+        await Font.loadAsync({
+          ...Ionicons.font,
+          'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+        });
+      } catch (e) {
+        // We might want to provide this error information to an error reporting service
+        console.warn(e);
+      } finally {
+        setLoadingComplete(true);
+        SplashScreen.hide();
+      }
+    }
+
+    loadResourcesAndDataAsync();
+  }, []);
+
+  if (!isLoadingComplete && !props.skipLoadingScreen) {
+    return null;
+  } else {
+    return (
+      <View style={styles.container}>
+        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+        <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
+          <Stack.Navigator>
+            <Stack.Screen name="Root" component={BottomTabNavigator} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
 });
-
-// Start the server
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
-});
-// [END gae_node_request_example]
-
-module.exports = app;
