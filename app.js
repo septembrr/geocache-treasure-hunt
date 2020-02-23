@@ -29,13 +29,23 @@ const options = {
   }
 };
 
+request.post({
+  headers: {'content-type' : 'application/x-www-form-urlencoded',
+  'Authorization': 'prj_live_sk_d3a09c4147fc4122f274c78e26e79a47b6ffc2f3'
+  },
+  url:     'https://api.radar.io/v1/geofences',
+  body:    "description=DesignHub&tag=venue&externalId=2&type=circle&coordinates=[38.650855,-121.345385]&radius=50"
+}, function(error, response, body){
+  console.log(body);
+});
+
 app.get('/', (req, res) => {
 
   request.get('https://api.radar.io/v1/users',options,function(err,resp,body){
     if(err) {
       console.log(err);
     }
-    if(res.statusCode === 200 ) {
+    if(resp.statusCode === 200 ) {
       // console.log(resp.body);
     }
     res.sendFile('/Users/emily/Documents/GitHub/geocache-treasure-hunt/views/index.html');
