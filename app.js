@@ -17,13 +17,31 @@
 // [START gae_node_request_example]
 const express = require('express');
 
+const request = require('request');
+
 const app = express();
 
+app.use(express.static('public'));
+
+const options = {
+  headers: {
+      'Authorization': 'prj_live_sk_d3a09c4147fc4122f274c78e26e79a47b6ffc2f3'
+  }
+};
+
 app.get('/', (req, res) => {
-  res
-    .status(200)
-    .send('Hello, world!')
-    .end();
+
+  request.get('https://api.radar.io/v1/users',options,function(err,resp,body){
+    if(err) {
+      console.log(err);
+    }
+    if(res.statusCode === 200 ) {
+      // console.log(resp.body);
+    }
+    res.sendFile('/Users/emily/Documents/GitHub/geocache-treasure-hunt/views/index.html');
+  });
+
+
 });
 
 // Start the server

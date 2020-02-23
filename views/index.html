@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Geocache Treasure Hunt</title>
+    <script src="js/testradar.js"></script>
+    <script type="text/javascript">
+        console.log('running this');
+        Radar.initialize("prj_live_pk_efb9e05b22828b8f6a53e1f62c173fe69626b096");
+        Radar.setPlacesProvider(Radar.PLACES_PROVIDER.FACEBOOK);
+        Radar.trackOnce(function(status, location, user, events) {
+            if (status === Radar.STATUS.SUCCESS) {
+                console.log('in inner if');
+                console.log(status);
+                console.log(user);
+                console.log(user.place);
+            } else {
+                console.log(status);
+                console.log('in outer else');
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Hello World!</h1>
+    <br>
+    <button id="getUsers">GET USERS</button>
+    <div id="userResults"></div>
+</body>
