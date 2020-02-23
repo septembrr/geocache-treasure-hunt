@@ -3,16 +3,25 @@
     <meta charset="utf8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Geocache Treasure Hunt</title>
+    <script src="js/key.js"></script>
     <script src="js/testradar.js"></script>
     <script type="text/javascript">
-        Radar.initialize("prj_live_pk_efb9e05b22828b8f6a53e1f62c173fe69626b096");
-        Radar.setPlacesProvider(Radar.PLACES_PROVIDER.FACEBOOK);
+        Radar.initialize(publishableKey);
         Radar.trackOnce(function(status, location, user, events) {
             if (status === Radar.STATUS.SUCCESS) {
+
+                // Get user id after registering user in Radar.io
                 console.log(user);
                 let currentLoc = document.createElement("p");
                 currentLoc.textContent = "Current Location: " + JSON.stringify(user.location.coordinates);
                 document.getElementById('userResults').appendChild(currentLoc);
+
+                if(user.geofences && user.geofences.length > 0) {
+                    let currentFence = document.createElement("p");
+                    currentFence.textContent = "Inside Geofence: " + user.geofences[0].description;
+                    document.getElementById('userResults').appendChild(currentFence);
+                }
+
             } else {
                 console.log(status);
             }
@@ -20,7 +29,7 @@
     </script>
 </head>
 <body>
-    <h1>Hello World!</h1>
+    <h1>Geocache Treasure Hunt</h1>
     <br>
     <a href="/"><button id="getUsers">GET STATUS</button></a>
     <div id="userResults"></div>

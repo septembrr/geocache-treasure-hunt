@@ -1,2 +1,7 @@
 node_modules/
 includes/js/key.js
+keytmp.pem
+cert.pem
+key.pem
+public/js/key.js
+keys.js

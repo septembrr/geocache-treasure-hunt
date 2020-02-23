@@ -16,28 +16,54 @@
 
 // [START gae_node_request_example]
 const express = require('express');
-
 const request = require('request');
+const fs = require('fs');
+var http = require('http');
+const https = require('https');
+const keys = require('./keys.js');
 
 const app = express();
+
+const key = fs.readFileSync('key.pem');
+const cert = fs.readFileSync('cert.pem');
+
+var credentials = {
+  key: key,
+  cert: cert
+};
+
+const server = https.createServer({key: key, cert: cert }, app);
 
 app.use(express.static('public'));
 
 const options = {
   headers: {
-      'Authorization': 'prj_live_sk_d3a09c4147fc4122f274c78e26e79a47b6ffc2f3'
+      'Authorization': keys.secretKey
   }
 };
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded',
-  'Authorization': 'prj_live_sk_d3a09c4147fc4122f274c78e26e79a47b6ffc2f3'
+  'Authorization': keys.secretKey
   },
   url:     'https://api.radar.io/v1/geofences',
-  body:    "description=DesignHub&tag=venue&externalId=2&type=circle&coordinates=[38.650855,-121.345385]&radius=50"
+  body:    "description=DesignHub&tag=venue&externalId=2&type=circle&coordinates=-[121.345396,38.650843]&radius=100"
 }, function(error, response, body){
   console.log(body);
 });
+
+request.post({
+  headers: {'content-type' : 'application/x-www-form-urlencoded',
+  'Authorization': keys.secretKey
+  },
+  url:     'https://api.radar.io/v1/geofences',
+  body:    "description=AllegiantInnovationCenter&tag=venue&externalId=3&type=circle&coordinates=[-121.389240,38.660538]&radius=100"
+}, function(error, response, body){
+  console.log(body);
+});
+
+// app.get('/', (req, res) => { res.send('this is an secure server') });
+// server.listen(3001, () => { console.log('listening on 3001') });
 
 app.get('/', (req, res) => {
 
@@ -45,7 +71,7 @@ app.get('/', (req, res) => {
     if(err) {
       console.log(err);
     }
-    if(resp.statusCode === 200 ) {
+    if(res.statusCode === 200 ) {
       // console.log(resp.body);
     }
     res.sendFile('/Users/emily/Documents/GitHub/geocache-treasure-hunt/views/index.html');
@@ -54,12 +80,18 @@ app.get('/', (req, res) => {
 
 });
 
-// Start the server
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
-});
-// [END gae_node_request_example]
+// // Start the server
+// const PORT = process.env.PORT || 3001;
+// app.listen(PORT, () => {
+//   console.log(`App listening on port ${PORT}`);
+//   console.log('Press Ctrl+C to quit.');
+// });
+// // [END gae_node_request_example]
+
+var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
+
+httpServer.listen(8080);
+httpsServer.listen(8443);
 
 module.exports = app;
