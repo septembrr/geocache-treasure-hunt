@@ -1,0 +1,24 @@
+2-25-2020
+I thought I'd add a note about what I meant to do at the hackathon and what still needed to be
+done if someone ever wants to finish this.
+
+The goal was to use CryptoZombies as a template for our digital assets - the collectable cards
+I had already completed the Solidity lessons which go through writing the contracts.
+I already knew how to deploy a contract and access it with a javascript website. The problem
+was that CryptoZombies uses multiple contracts which I thought would be necessary for us. 
+I managed to deploy multiple contracts in a way that gave me a single contract address to work with
+but I couldn't figure out how to deal with multiple ABIs. I needed one and had a bunch.
+
+I had index.html from CryptoZombies but they didn't include the file cryptozombies_abi.js in the lessons 
+I did and I needed it to understand using multiple ABIs.
+In the build folder there are a bunch of JSON files that contain those ABIs used to access the contracts.
+
+I just found the lesson necessary to do that. See https://cryptozombies.io/en/lesson/11/chapter/1
+for the lessons I missed. Going through the module "Testing Smart Contracts with Truffle" should fill 
+in the gap between what I have and what we needed.
+
+Once CryptoZombies is working it just needs to be modified - we don't need to feed or fight our treasure cards. 
+I can't remember if the contract functions for trading the items are all there or if they need to be added. 
+I think mostly it just needs to be added to the index.html and we need to change how a person gets a card, and
+how it knows which image to display.
+
